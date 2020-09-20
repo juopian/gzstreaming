@@ -1,0 +1,28 @@
+version: '3'
+services:
+  web-server:
+    container_name: streaming-webserver
+    image: juopian/node-web-app:streaming
+    volumes:
+      - ./app:/usr/src/app
+    command: ["npm","start"]
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env_app
+    #restart: always
+    #environment:
+    #  - NODE_ENV=production
+    networks:
+      web-net:
+  redis:
+    image: redis:latest
+    sysctls:
+      - net.core.somaxconn=1024
+    volumes:
+      - ./data/redis:/data
+    command: redis-server --appendonly yes
+    networks:
+      web-net:
+networks:
+  web-net:
